@@ -1,5 +1,5 @@
 // C++ version of timer
-// Originally written in Python 3
+// Originally written in Python 3.
 
 // By Ernold "C" McPuvlist, Jan 2022
 
