@@ -484,7 +484,6 @@ int main(int argc, char*argv[]) {
     // Welcome message
     cout << ANSI_ESC << ANSI_BOLD << ANSI_WHITE << "Event Timer 1.0" << endl;
     cout << "Ernold C Puvlist, 2022" << endl;
-    cout << "A warm welcome to all cunts" << endl;
 
     // Load data from disk
     event_array.disk_load();
@@ -559,7 +558,6 @@ int main(int argc, char*argv[]) {
                     event_array.disk_save();
 
                 cout << endl << "Thank you for using Event Timer." << endl;
-                cout << "Now fuck off" << endl << endl;
                 running = false;
                 break;
             default:
