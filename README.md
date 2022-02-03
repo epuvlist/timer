@@ -8,14 +8,14 @@ The output shows:
 - Calculated time interval between start and end times. If end time is not
   given, then the interval is calculated since or until the current time.
   
-##Menu options:
+## Menu options:
   
 - A - Add a new event  
 - Enn - Edit event no. nn
 - Dnn - Delete event no. nn
 - X - Exit, optionally giving you the chance to save the data to disk
   
-##Coding notes
+## Coding notes
 
 Written in C++, compile using g++ or similar.
   
