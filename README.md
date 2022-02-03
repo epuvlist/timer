@@ -8,21 +8,18 @@ The output shows:
 - Calculated time interval between start and end times. If end time is not
   given, then the interval is calculated since or until the current time.
   
-  Menu options:
+##Menu options:
   
-  -A - Add a new event
+- A - Add a new event  
+- Enn - Edit event no. nn
+- Dnn - Delete event no. nn
+- X - Exit, optionally giving you the chance to save the data to disk
   
-  Enn - Edit event no. nn
+##Coding notes
+
+Written in C++, compile using g++ or similar.
   
-  Dnn - Delete event no. nn
+Events are stored using a C++ vector object. The maximum number of
+events is limited only by machine memory.
   
-  X - Exit, optionally giving you the chance to save the data to disk
-  
-  Coding notes
-  ============
-  Written in C++, compile using g++ or similar.
-  
-  Events are stored using a C++ vector object. The maximum number of
-  events is limited only by machine memory.
-  
-  There is no option to scroll or page the list of events.
+There is no option to scroll or page the list of events.
