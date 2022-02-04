@@ -17,7 +17,7 @@ The output shows:
   
 ## Coding notes
 
-Written in C++, compile using g++ or similar.
+Written in C++ on Raspberry Pi OS 11 (Bullseye) and compiled using g++ 10.2.1.
   
 Events are stored using a C++ vector object. The maximum number of
 events is limited only by machine memory.
