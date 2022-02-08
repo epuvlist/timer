@@ -1,4 +1,5 @@
 # Makefile for timer_proto
+# new comment
 
 project = timer
 
