@@ -483,7 +483,7 @@ int main(int argc, char*argv[]) {
     bool is_dirty = false; // whether edits have happened or not
 
     // Welcome message
-    cout << ANSI_ESC << ANSI_BOLD << ANSI_WHITE << "Event Timer 1.0" << endl;
+    cout << ANSI_ESC << ANSI_BOLD << ANSI_WHITE << "Event Timer 1.1" << endl;
     cout << "Ernold C Puvlist, 2022" << endl;
 
     // Load data from disk
