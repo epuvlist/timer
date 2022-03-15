@@ -480,6 +480,7 @@ int main(int argc, char*argv[]) {
     int event_selected;
     char choice_code;
     bool running = true;
+    bool is_dirty = false; // whether edits have happened or not
 
     // Welcome message
     cout << ANSI_ESC << ANSI_BOLD << ANSI_WHITE << "Event Timer 1.0" << endl;
@@ -500,6 +501,7 @@ int main(int argc, char*argv[]) {
         switch (choice_code) {
             case 'A':
                 event_array.new_event();
+                is_dirty = true;
                 break;
             case 'E':
                 // Edit selected record.
@@ -510,8 +512,10 @@ int main(int argc, char*argv[]) {
                         cerr << OUT_OF_RANGE << endl;
                         break;
                     }
-                    else
+                    else {
                         event_array.at(event_selected - 1).get_inputs();
+                        is_dirty = true;
+                    }
                 }
                 catch (exception &e) {
                     cerr << NOT_VALID_NO << endl;
@@ -528,8 +532,10 @@ int main(int argc, char*argv[]) {
                     }
                     cout << "Delete event no. " << event_selected << " (" << event_array.at(event_selected - 1).name << ")? ";
                     getline(cin, choice);
-                    if (toupper(choice[0]) == 'Y')
+                    if (toupper(choice[0]) == 'Y') {
                         event_array.erase(event_array.begin() + event_selected - 1);
+                        is_dirty = true;
+                    }
                     else
                         cout << "Not deleted" << endl;
                 }
@@ -552,12 +558,15 @@ int main(int argc, char*argv[]) {
                 }
                 break;
             case 'X':
-                cout << "Save data? ";
-                getline(cin, choice);
-                if (toupper(choice[0]) == 'Y')
-                    event_array.disk_save();
+                if (is_dirty) {
+                    cout << "Data has been changed. Save the data? ";
+                    getline(cin, choice);
+                    if (toupper(choice[0]) == 'Y')
+                        event_array.disk_save();
+                }
 
                 cout << endl << "Thank you for using Event Timer." << endl;
+                cout << "Now fuck off" << endl;
                 running = false;
                 break;
             default:
