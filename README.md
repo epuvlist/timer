@@ -6,7 +6,7 @@ The output shows:
 - Start date (optionally including time)
 - End date (optionally including time)
 - Calculated time interval between start and end times. If end time is not
-  given, then the interval is calculated since or until the current time.
+  given, then the interval between then and the current time is calculated.
   
 ## Menu options:
   
