@@ -13,7 +13,7 @@ The output shows:
 - A - Add a new event  
 - Enn - Edit event no. nn
 - Dnn - Delete event no. nn
-- X - Exit, optionally giving you the chance to save the data to disk
+- X - Exit, giving you the chance to save the data if it has been changed
   
 ## Coding notes
 
