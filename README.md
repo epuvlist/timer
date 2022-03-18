@@ -20,6 +20,6 @@ The output shows:
 Written in C++ on Raspberry Pi OS 11 (Bullseye) and compiled using g++ 10.2.1.
   
 Events are stored using a C++ vector object. The maximum number of
-events is limited only by machine memory.
+events is limited only by OS-allocated memory.
   
 There is no option to scroll or page the list of events.
