@@ -549,9 +549,11 @@ int main(int argc, char*argv[]) {
                 switch (toupper(choice[0])) {
                     case 'N':
                         event_array.sort_events(&TimedEventArray::compare_by_name);
+                        is_dirty = true;
                         break;
                     case 'D':
                         event_array.sort_events(&TimedEventArray::compare_by_date);
+                        is_dirty = true;
                         break;
                     default:
                         cout << INVALID_CHOICE << endl;
