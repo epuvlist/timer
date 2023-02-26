@@ -7,6 +7,9 @@
 // Double slash are to comment the code
 /* Slash/asterisk are debug stubs */
 
+// TODO:
+// Colour error messages using ANSI to make them stand out
+
 #include <fstream>
 #include <iostream>
 #include <ctime>
@@ -48,6 +51,7 @@ static const char NOT_VALID_NO[] = "Not a valid number";
 static const char INVALID_CHOICE[] = "Not a valid choice";
 static const char INVALID_DATE[] = "Not a valid date/time";
 static const char OUT_OF_MEMORY[] = "Error allocating memory for new event";
+static const char BAD_TIMESTAMP[] = "Bad timestamp in data file";
 
 // ANSI colour sequences
 static const char ANSI_ESC[2] = {0x1b, '['};
@@ -364,21 +368,21 @@ public:
     // Sort the event array.
     // compare_func = function to use for field comparison
 
-    bool done;
+        bool done;
 
-    for(int i = 0; i < (int)size(); i++) {
-        done = true;
-            for(iterator itj = begin(); itj < end()-i-1; itj++) {
-                if (compare_func(*itj, *(itj+1)) > 0) {
-                    // swap
-                    iter_swap(itj, itj+1);
-                    done = false;
+        for(int i = 0; i < (int)size(); i++) {
+            done = true;
+                for(iterator itj = begin(); itj < end()-i-1; itj++) {
+                    if (compare_func(*itj, *(itj+1)) > 0) {
+                        // swap
+                        iter_swap(itj, itj+1);
+                        done = false;
+                    }
                 }
+                if (done)
+                    break;
             }
-            if (done)
-                break;
         }
-    }
 
     void disk_save() {
         // Save (serialise) the event array to file stream
@@ -425,7 +429,17 @@ public:
             tmp_event.name = cbuffer;
             tmp_event.name.resize(EVENT_NAME_LENGTH);
             f.read((char *)&tmp_event.start_time, TIMESIZE);
+            // Test localtime() to validate the timestamp
+            if (localtime(&tmp_event.start_time) == NULL) {
+                cerr << BAD_TIMESTAMP << endl;
+                break;
+            }
             f.read((char *)&tmp_event.end_time, TIMESIZE);
+            if (localtime(&tmp_event.end_time) == NULL) {
+                cerr << BAD_TIMESTAMP << endl;
+                break;
+            }
+
             f.read((char *)&tmp_event.all_day, BOOLSIZE);
 
             // Add the loaded event to the array

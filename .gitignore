@@ -6,7 +6,3 @@ timer.cpp~
 timer.dat.bak
 timer.o
 timer
-timer_pre_vector.cpp
-launch.json
-tasks.json
-timer_dev.code-workspace
