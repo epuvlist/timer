@@ -17,8 +17,6 @@
 #include <iomanip>
 #include <vector>
 
-// #define DEBUG // Turn on to include debug code
-
 using std::cout;
 using std::cerr;
 using std::cin;
@@ -498,7 +496,7 @@ int main(int argc, char*argv[]) {
 
     // Welcome message
     cout << ANSI_ESC << ANSI_BOLD << ANSI_WHITE << "Event Timer 1.1" << endl;
-    cout << "Ernold C Puvlist, 2022" << endl;
+    cout << "Copyright (C) Ernold C Puvlist, 2022" << endl;
 
     // Load data from disk
     event_array.disk_load();
