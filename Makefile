@@ -7,6 +7,3 @@ $(project) : $(project).cpp
 
 clean:
 	rm $(project).o $(project)
-
-
-
