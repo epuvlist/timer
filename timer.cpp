@@ -52,12 +52,11 @@ static const char OUT_OF_MEMORY[] = "Error allocating memory for new event";
 static const char BAD_TIMESTAMP[] = "Bad timestamp in data file";
 
 // ANSI colour sequences
-static const char ANSI_ESC[2] = {0x1b, '['};
-// static const char ANSI_NOBOLD[2] = {'0', ';'};
-static const char ANSI_BOLD[2] = {'1', ';'};
-static const char ANSI_WHITE[3] = {'3', '7', 'm'};
-static const char ANSI_GREEN[3] = {'3', '2', 'm'};
-static const char ANSI_YELLOW[3] = {'3', '3', 'm'};
+static const char ANSI_NORMAL[] = "\033[37;0m";
+static const char ANSI_WHITE_BOLD[] = "\033[37;1m";
+static const char ANSI_RED_BOLD[] = "\033[31;1m";
+static const char ANSI_GREEN_BOLD[] = "\033[32;1m";
+static const char ANSI_YELLOW_BOLD[] = "\033[33;1m";
 
 // Class definitions
 
@@ -134,7 +133,7 @@ public:
 
             if (name.length() > EVENT_NAME_LENGTH) {
                 name.resize(EVENT_NAME_LENGTH);
-                cout << "Name is too long and has been truncated to:" << endl;
+                cout << ANSI_RED_BOLD << "Name is too long and has been truncated to:" << ANSI_NORMAL << endl;
                 cout << name << endl;
             }
             else
@@ -156,7 +155,7 @@ public:
                 keep_trying = false;
                 }
             else
-                cout << "That's wrong" << endl;
+                cout << ANSI_RED_BOLD << "That's wrong" << ANSI_NORMAL << endl;
         }
 
         // 3. Get start time
@@ -166,7 +165,7 @@ public:
                 cout << "Enter event start date in ISO format (yyyy-mm-dd):" << endl;
                 getline(cin, input_buffer);
                 if(strptime(input_buffer.c_str(), dateformat, &tmp_tm) == NULL)
-                    cout << INVALID_DATE << endl;
+                    cout << ANSI_RED_BOLD << INVALID_DATE << ANSI_NORMAL << endl;
                 else {
                     tmp_tm.tm_hour = 0;
                     tmp_tm.tm_min = 0;
@@ -180,7 +179,7 @@ public:
                 cout << "Enter event start date/time in ISO format (yyyy-mm-dd hh:mm):" << endl;
                 getline(cin, input_buffer);
                 if(strptime(input_buffer.c_str(), datetimeformat, &tmp_tm) == NULL)
-                    cout << INVALID_DATE << endl;
+                    cout << ANSI_RED_BOLD << INVALID_DATE << ANSI_NORMAL << endl;
                 else {
                     tmp_tm.tm_sec = 0;
                     tmp_tm.tm_isdst = -1;
@@ -201,7 +200,7 @@ public:
                     keep_trying = false;
                 }
                 else if(strptime(input_buffer.c_str(), dateformat, &tmp_tm) == NULL)
-                    cout << INVALID_DATE << endl;
+                    cout << ANSI_RED_BOLD << INVALID_DATE << ANSI_NORMAL << endl;
                 else {
                     tmp_tm.tm_hour = 0;
                     tmp_tm.tm_min = 0;
@@ -219,7 +218,7 @@ public:
                     keep_trying = false;
                 }
                 else if(strptime(input_buffer.c_str(), datetimeformat, &tmp_tm) == NULL)
-                    cout << INVALID_DATE << endl;
+                    cout << ANSI_RED_BOLD << INVALID_DATE << ANSI_NORMAL << endl;
                 else {
                     tmp_tm.tm_sec = 0;
                     tmp_tm.tm_isdst = -1;
@@ -279,9 +278,9 @@ ostream& operator<<(ostream& stream, const TimedEvent& te)
     strftime(time_display_buf, EVENT_NAME_LENGTH, date_format.c_str(), temp_tm);
 
     if (is_future)
-        stream << ANSI_ESC << ANSI_GREEN;
+        stream << ANSI_GREEN_BOLD;
     else
-        stream << ANSI_ESC << ANSI_YELLOW;
+        stream << ANSI_YELLOW_BOLD;
 
     // Name is forced to a C string here using c_str(). For unknown reasons
     // using the C++ string direct causes setw() to be ignored for strings
@@ -349,7 +348,7 @@ public:
             push_back(tmp_event);
         }
         catch (bad_alloc&) {
-            cerr << OUT_OF_MEMORY<< endl;
+            cerr << ANSI_RED_BOLD << OUT_OF_MEMORY << ANSI_NORMAL << endl;
         }
     }
 
@@ -395,7 +394,7 @@ public:
         }
 
         if (f.fail())
-            cerr << "Cannot save data to disk" << endl;
+            cerr << ANSI_RED_BOLD << "Cannot save data to disk" << ANSI_NORMAL << endl;
 
         f.close();
     }
@@ -408,7 +407,7 @@ public:
 
         f.open (DISK_FILE, ios::in | ios::binary);
             if (f.fail()) {
-                cerr << file_err << endl;
+                cerr << ANSI_RED_BOLD << file_err << ANSI_NORMAL << endl;
                 return;
             }
 
@@ -429,12 +428,12 @@ public:
             f.read((char *)&tmp_event.start_time, TIMESIZE);
             // Test localtime() to validate the timestamp
             if (localtime(&tmp_event.start_time) == NULL) {
-                cerr << BAD_TIMESTAMP << endl;
+                cerr << ANSI_RED_BOLD << BAD_TIMESTAMP << ANSI_NORMAL << endl;
                 break;
             }
             f.read((char *)&tmp_event.end_time, TIMESIZE);
             if (localtime(&tmp_event.end_time) == NULL) {
-                cerr << BAD_TIMESTAMP << endl;
+                cerr << ANSI_RED_BOLD << BAD_TIMESTAMP << ANSI_NORMAL << endl;
                 break;
             }
 
@@ -464,21 +463,21 @@ public:
         // All header spacing takes EVENT_NAME_LENGTH into account, so 
         // that it can stretch accordingly
 
-        cout << endl << setfill(' ') << ANSI_ESC << ANSI_BOLD << ANSI_WHITE << setw(5) << "" << 
+        cout << endl << setfill(' ') << ANSI_WHITE_BOLD << setw(5) << "" << 
             setw(EVENT_NAME_LENGTH+1) << left << "Name" << setw(17) << "Start" << 
-            setw(16) << "End" << ANSI_ESC << ANSI_YELLOW << " Elapsed" << 
-            ANSI_ESC << ANSI_WHITE << "/" << ANSI_ESC << ANSI_GREEN << "To go" << endl;
-        cout << ANSI_ESC << ANSI_WHITE << setw(EVENT_NAME_LENGTH + 42) << "" << "W  D   H:M" << endl;
+            setw(16) << "End" << ANSI_YELLOW_BOLD << " Elapsed" << 
+            ANSI_WHITE_BOLD << "/" << ANSI_GREEN_BOLD << "To go" << endl;
+        cout << ANSI_NORMAL << setw(EVENT_NAME_LENGTH + 42) << "" << "W  D   H:M" << endl;
         cout << setfill('=') << setw(EVENT_NAME_LENGTH + 53) << "" << endl;
 
         // Use default space fill from now on
         cout << setfill(' ') << "";
 
         for (iterator it = begin(); it != end(); it++)
-            cout << ANSI_ESC << ANSI_BOLD << ANSI_WHITE << right << setw(3) << line_no++ << ". " << *it << endl;
+            cout << ANSI_NORMAL << right << setw(3) << line_no++ << ". " << *it << endl;
 
         strftime(timedisp, 40, "%a %d %b %Y %H:%M:%S %Z", localtime(&cur_time));
-        cout << ANSI_ESC << ANSI_WHITE << endl << timedisp << endl;
+        cout << ANSI_NORMAL << endl << timedisp << endl;
     }
 };
 
@@ -495,7 +494,7 @@ int main(int argc, char*argv[]) {
     bool is_dirty = false; // whether edits have happened or not
 
     // Welcome message
-    cout << ANSI_ESC << ANSI_BOLD << ANSI_WHITE << "Event Timer 1.1" << endl;
+    cout << ANSI_NORMAL << "Event Timer 1.1" << endl;
     cout << "Copyright (C) Ernold C Puvlist, 2022" << endl;
 
     // Load data from disk
@@ -521,7 +520,7 @@ int main(int argc, char*argv[]) {
                 try {
                     event_selected = stoi(choice.substr(1));
                     if (event_selected < 0 || event_selected > (int)event_array.size()) {
-                        cerr << OUT_OF_RANGE << endl;
+                        cerr << ANSI_RED_BOLD << OUT_OF_RANGE << ANSI_NORMAL << endl;
                         break;
                     }
                     else {
@@ -530,7 +529,7 @@ int main(int argc, char*argv[]) {
                     }
                 }
                 catch (exception &e) {
-                    cerr << NOT_VALID_NO << endl;
+                    cerr << ANSI_RED_BOLD << NOT_VALID_NO << ANSI_NORMAL << endl;
                 }
                 break;
             case 'D':
@@ -539,7 +538,7 @@ int main(int argc, char*argv[]) {
                 try {
                     event_selected = stoi(choice.substr(1));
                     if (event_selected < 0 || event_selected > (int)event_array.size()) {
-                        cerr << OUT_OF_RANGE << endl;
+                        cerr << ANSI_RED_BOLD << OUT_OF_RANGE << ANSI_NORMAL << endl;
                         break;
                     }
                     cout << "Delete event no. " << event_selected << " (" << event_array.at(event_selected - 1).name << ")? ";
@@ -549,10 +548,10 @@ int main(int argc, char*argv[]) {
                         is_dirty = true;
                     }
                     else
-                        cout << "Not deleted" << endl;
+                        cout << ANSI_RED_BOLD << "Not deleted" << ANSI_NORMAL << endl;
                 }
                 catch (exception &e) {
-                    cerr << NOT_VALID_NO<< endl;
+                    cerr << ANSI_RED_BOLD << NOT_VALID_NO << ANSI_NORMAL << endl;
                 }
                 break;
             case 'S': // Sort the events
@@ -568,7 +567,7 @@ int main(int argc, char*argv[]) {
                         is_dirty = true;
                         break;
                     default:
-                        cout << INVALID_CHOICE << endl;
+                        cout << ANSI_RED_BOLD << INVALID_CHOICE << ANSI_NORMAL << endl;
                 }
                 break;
             case 'X':
@@ -584,7 +583,7 @@ int main(int argc, char*argv[]) {
                 running = false;
                 break;
             default:
-                cout << endl << INVALID_CHOICE << endl;
+                cout << endl << ANSI_RED_BOLD << INVALID_CHOICE << ANSI_NORMAL << endl;
         }
     }
 }
