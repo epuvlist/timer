@@ -2,6 +2,7 @@
 // Originally written in Python 3
 
 // By Ernold "C" McPuvlist, Jan 2022
+// Updated March 2025
 
 /* Conventions used for comments: */
 // Double slash are to comment the code
@@ -495,7 +496,7 @@ int main(int argc, char*argv[]) {
 
     // Welcome message
     cout << ANSI_NORMAL << "Event Timer 1.1" << endl;
-    cout << "Copyright (C) Ernold C Puvlist, 2022" << endl;
+    cout << "Copyright (C) Ernold C Puvlist, 2022, 2025" << endl;
 
     // Load data from disk
     event_array.disk_load();
