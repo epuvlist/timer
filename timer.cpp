@@ -495,7 +495,7 @@ int main(int argc, char*argv[]) {
     bool is_dirty = false; // whether edits have happened or not
 
     // Welcome message
-    cout << ANSI_NORMAL << "Event Timer 1.1" << endl;
+    cout << ANSI_NORMAL << "Event Timer 1.2" << endl;
     cout << "Copyright (C) Ernold C Puvlist, 2022, 2025" << endl;
 
     // Load data from disk
