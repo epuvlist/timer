@@ -9,7 +9,6 @@
 /* Slash/asterisk are debug stubs */
 
 // TODO:
-// Colour error messages using ANSI to make them stand out
 
 #include <fstream>
 #include <iostream>
@@ -58,6 +57,9 @@ static const char ANSI_WHITE_BOLD[] = "\033[37;1m";
 static const char ANSI_RED_BOLD[] = "\033[31;1m";
 static const char ANSI_GREEN_BOLD[] = "\033[32;1m";
 static const char ANSI_YELLOW_BOLD[] = "\033[33;1m";
+
+// Forward declaration of global function
+static void err_out(const char *);
 
 // Class definitions
 
@@ -134,8 +136,8 @@ public:
 
             if (name.length() > EVENT_NAME_LENGTH) {
                 name.resize(EVENT_NAME_LENGTH);
-                cout << ANSI_RED_BOLD << "Name is too long and has been truncated to:" << ANSI_NORMAL << endl;
-                cout << name << endl;
+                err_out("Name is too long and has been truncated to:");
+                cerr << name << endl;
             }
             else
                 // has to be normalised to EVENT_NAME_LENGTH anyway
@@ -156,7 +158,7 @@ public:
                 keep_trying = false;
                 }
             else
-                cout << ANSI_RED_BOLD << "That's wrong" << ANSI_NORMAL << endl;
+                err_out("That's wrong");
         }
 
         // 3. Get start time
@@ -166,7 +168,7 @@ public:
                 cout << "Enter event start date in ISO format (yyyy-mm-dd):" << endl;
                 getline(cin, input_buffer);
                 if(strptime(input_buffer.c_str(), dateformat, &tmp_tm) == NULL)
-                    cout << ANSI_RED_BOLD << INVALID_DATE << ANSI_NORMAL << endl;
+                    err_out(INVALID_DATE);
                 else {
                     tmp_tm.tm_hour = 0;
                     tmp_tm.tm_min = 0;
@@ -180,7 +182,7 @@ public:
                 cout << "Enter event start date/time in ISO format (yyyy-mm-dd hh:mm):" << endl;
                 getline(cin, input_buffer);
                 if(strptime(input_buffer.c_str(), datetimeformat, &tmp_tm) == NULL)
-                    cout << ANSI_RED_BOLD << INVALID_DATE << ANSI_NORMAL << endl;
+                    err_out(INVALID_DATE);
                 else {
                     tmp_tm.tm_sec = 0;
                     tmp_tm.tm_isdst = -1;
@@ -201,7 +203,7 @@ public:
                     keep_trying = false;
                 }
                 else if(strptime(input_buffer.c_str(), dateformat, &tmp_tm) == NULL)
-                    cout << ANSI_RED_BOLD << INVALID_DATE << ANSI_NORMAL << endl;
+                    err_out(INVALID_DATE);
                 else {
                     tmp_tm.tm_hour = 0;
                     tmp_tm.tm_min = 0;
@@ -219,7 +221,7 @@ public:
                     keep_trying = false;
                 }
                 else if(strptime(input_buffer.c_str(), datetimeformat, &tmp_tm) == NULL)
-                    cout << ANSI_RED_BOLD << INVALID_DATE << ANSI_NORMAL << endl;
+                    err_out(INVALID_DATE);
                 else {
                     tmp_tm.tm_sec = 0;
                     tmp_tm.tm_isdst = -1;
@@ -231,7 +233,7 @@ public:
     }
 };
 
-// Overload the << operator for pushing a TimedEvent object
+// Overload the << operator for sending a TimedEvent object
 // to output stream (i.e. display a TimedEvent record)
 ostream& operator<<(ostream& stream, const TimedEvent& te)
 {
@@ -349,7 +351,7 @@ public:
             push_back(tmp_event);
         }
         catch (bad_alloc&) {
-            cerr << ANSI_RED_BOLD << OUT_OF_MEMORY << ANSI_NORMAL << endl;
+            err_out(OUT_OF_MEMORY);
         }
     }
 
@@ -395,7 +397,7 @@ public:
         }
 
         if (f.fail())
-            cerr << ANSI_RED_BOLD << "Cannot save data to disk" << ANSI_NORMAL << endl;
+            err_out("Cannot save data to disk");
 
         f.close();
     }
@@ -408,7 +410,7 @@ public:
 
         f.open (DISK_FILE, ios::in | ios::binary);
             if (f.fail()) {
-                cerr << ANSI_RED_BOLD << file_err << ANSI_NORMAL << endl;
+                err_out(file_err);
                 return;
             }
 
@@ -429,12 +431,12 @@ public:
             f.read((char *)&tmp_event.start_time, TIMESIZE);
             // Test localtime() to validate the timestamp
             if (localtime(&tmp_event.start_time) == NULL) {
-                cerr << ANSI_RED_BOLD << BAD_TIMESTAMP << ANSI_NORMAL << endl;
+                err_out(BAD_TIMESTAMP);
                 break;
             }
             f.read((char *)&tmp_event.end_time, TIMESIZE);
             if (localtime(&tmp_event.end_time) == NULL) {
-                cerr << ANSI_RED_BOLD << BAD_TIMESTAMP << ANSI_NORMAL << endl;
+                err_out(BAD_TIMESTAMP);
                 break;
             }
 
@@ -485,6 +487,11 @@ public:
 // Data container stored on the heap
 static TimedEventArray event_array;
 
+// Function to send an error message to cerr, highlighted in red
+static void err_out(const char *msg) {
+    cerr << ANSI_RED_BOLD << msg << ANSI_NORMAL << endl;
+}
+
 // Main
 int main(int argc, char*argv[]) {
 
@@ -521,7 +528,7 @@ int main(int argc, char*argv[]) {
                 try {
                     event_selected = stoi(choice.substr(1));
                     if (event_selected < 0 || event_selected > (int)event_array.size()) {
-                        cerr << ANSI_RED_BOLD << OUT_OF_RANGE << ANSI_NORMAL << endl;
+                        err_out(OUT_OF_RANGE);
                         break;
                     }
                     else {
@@ -530,7 +537,7 @@ int main(int argc, char*argv[]) {
                     }
                 }
                 catch (exception &e) {
-                    cerr << ANSI_RED_BOLD << NOT_VALID_NO << ANSI_NORMAL << endl;
+                    err_out(NOT_VALID_NO);
                 }
                 break;
             case 'D':
@@ -539,7 +546,7 @@ int main(int argc, char*argv[]) {
                 try {
                     event_selected = stoi(choice.substr(1));
                     if (event_selected < 0 || event_selected > (int)event_array.size()) {
-                        cerr << ANSI_RED_BOLD << OUT_OF_RANGE << ANSI_NORMAL << endl;
+                        err_out(OUT_OF_RANGE);
                         break;
                     }
                     cout << "Delete event no. " << event_selected << " (" << event_array.at(event_selected - 1).name << ")? ";
@@ -549,10 +556,10 @@ int main(int argc, char*argv[]) {
                         is_dirty = true;
                     }
                     else
-                        cout << ANSI_RED_BOLD << "Not deleted" << ANSI_NORMAL << endl;
+                        err_out("Not deleted");
                 }
                 catch (exception &e) {
-                    cerr << ANSI_RED_BOLD << NOT_VALID_NO << ANSI_NORMAL << endl;
+                    err_out(NOT_VALID_NO);
                 }
                 break;
             case 'S': // Sort the events
@@ -568,7 +575,7 @@ int main(int argc, char*argv[]) {
                         is_dirty = true;
                         break;
                     default:
-                        cout << ANSI_RED_BOLD << INVALID_CHOICE << ANSI_NORMAL << endl;
+                        err_out(INVALID_CHOICE);
                 }
                 break;
             case 'X':
@@ -584,7 +591,8 @@ int main(int argc, char*argv[]) {
                 running = false;
                 break;
             default:
-                cout << endl << ANSI_RED_BOLD << INVALID_CHOICE << ANSI_NORMAL << endl;
+                cerr << endl;
+                err_out(INVALID_CHOICE);
         }
     }
 }
